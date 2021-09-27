@@ -1,7 +1,6 @@
-const http = require('http');
 const xml2jsparser = require('xml2js').parseString;
 
-module.exports.sendHttp = async function (_data, _host, _port, _path, _auth) {
+module.exports.sendHttp = async function (_data, _host, _port, _path, _auth, _protocol) {
     var xmlRequest = _data;
     var options = {
         host: _host,
@@ -15,7 +14,8 @@ module.exports.sendHttp = async function (_data, _host, _port, _path, _auth) {
             'Content-Length': Buffer.byteLength(xmlRequest)
         },
     };
-    //var http = params.protocol == 'https' ? require('https') : require('http');
+
+    const http = _protocol == 'https' ? require('https') : require('http');
     return new Promise((resolve, reject) => {
         var req = http.request(options, (res) => {
             if (res.statusCode < 200 || res.statusCode > 299) {
@@ -45,6 +45,6 @@ module.exports.sendHttp = async function (_data, _host, _port, _path, _auth) {
             req.write(xmlRequest);
         }
         req.end();
-        
+
     });
 };
